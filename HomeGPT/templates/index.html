@@ -1,1 +1,452 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Assistant Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background-color: #f7f7f8;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .clear-btn {
+            background: none;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #4b5563;
+        }
+        
+        .clear-btn:hover {
+            background-color: #f9fafb;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .message {
+            margin-bottom: 24px;
+            display: flex;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+        
+        .bot-message {
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .user-message .message-content {
+            background-color: #007bff;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .bot-message .message-content {
+            background-color: #f1f1f1;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .input-container {
+            padding: 16px 20px;
+            border-top: 1px solid #e5e5e5;
+            background-color: #ffffff;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 24px;
+            font-size: 16px;
+            outline: none;
+            resize: none;
+            max-height: 120px;
+            min-height: 24px;
+            line-height: 1.4;
+        }
+        
+        .chat-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .send-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .send-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .send-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background-color: #f1f1f1;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: 80%;
+            margin-bottom: 24px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #999;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typingAnimation {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .suggestion-btn {
+            background-color: #f1f1f1;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .suggestion-btn:hover {
+            background-color: #e5e5e5;
+        }
+        
+        .device-status {
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .device-status h3 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LimmaGPT</h1>
+        <button class="clear-btn" id="clearChat">Clear Chat</button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="device-status">
+            <h3>Available Devices</h3>
+            <div class="status-item">
+                <span>💡 Room Light</span>
+            </div>
+            <div class="status-item">
+                <span>🌀 Bedroom Fan</span>
+            </div>
+            <div class="status-item">
+                <span>💡 Kitchen Light</span>
+            </div>
+            <div class="status-item">
+                <span>📺 TV</span>
+            </div>
+            <div class="status-item">
+                <span>🌡️ Temperature Sensor</span>
+            </div>
+            <div class="status-item">
+                <span>💧 Humidity Sensor</span>
+            </div>
+            <div class="status-item">
+                <span>⚙️ Servo Motor 1</span>
+            </div>
+            <div class="status-item">
+                <span>⚙️ Servo Motor 2</span>
+            </div>
+        </div>
+        
+        <div class="suggestions">
+            <button class="suggestion-btn" data-command="turn on room light">Turn On Light</button>
+            <button class="suggestion-btn" data-command="turn off bedroom fan">Turn Off Fan</button>
+            <button class="suggestion-btn" data-command="get temperature">Check Temperature</button>
+            <button class="suggestion-btn" data-command="turn on tv">Turn On TV</button>
+            <button class="suggestion-btn" data-command="get humidity">Check Humidity</button>
+            <button class="suggestion-btn" data-command="set servo motor 1 to 90 degrees">Servo 1 to 90°</button>
+        </div>
+        
+        <!-- Messages will be inserted here by JavaScript -->
+        {% for message in chat_history %}
+            <div class="message {{ message.sender }}-message">
+                <div class="message-content">{{ message.message }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    </div>
+    
+    <div class="input-container">
+        <div class="input-wrapper">
+            <textarea 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Type your command (e.g., 'turn on room light', 'get temperature')..." 
+                rows="1"
+            ></textarea>
+        </div>
+        <button class="send-btn" id="sendBtn" title="Send Command">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chatContainer');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const clearBtn = document.getElementById('clearChat');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+            
+            // Auto-resize textarea
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            
+            // Focus on input when page loads
+            chatInput.focus();
+            
+            // Send message on button click
+            sendBtn.addEventListener('click', sendMessage);
+            
+            // Send message on Enter key (but allow Shift+Enter for new line)
+            chatInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Clear chat button
+            clearBtn.addEventListener('click', clearChat);
+            
+            // Suggestion buttons
+            suggestionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const command = this.getAttribute('data-command');
+                    chatInput.value = command;
+                    sendMessage();
+                });
+            });
+            
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                
+                // Add user message to UI immediately
+                addMessageToUI('user', message);
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Send to server
+                fetch('/send_command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ command: message }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideTypingIndicator();
+                    
+                    if (data.success) {
+                        // Update chat history with the server response
+                        updateChatHistory(data.chat_history);
+                    } else {
+                        // Show error message
+                        addMessageToUI('bot', data.response || 'An error occurred');
+                    }
+                })
+                .catch(error => {
+                    hideTypingIndicator();
+                    console.error('Error:', error);
+                    addMessageToUI('bot', '❌ Failed to send command. Please try again.');
+                });
+            }
+            
+            function clearChat() {
+                fetch('/clear_chat', {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reload the page to get the cleared chat
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            
+            function updateChatHistory(chatHistory) {
+                // Clear the chat container except for device status and suggestions
+                const deviceStatus = document.querySelector('.device-status');
+                const suggestions = document.querySelector('.suggestions');
+                chatContainer.innerHTML = '';
+                
+                if (deviceStatus) {
+                    chatContainer.appendChild(deviceStatus);
+                }
+                if (suggestions) {
+                    chatContainer.appendChild(suggestions);
+                }
+                
+                // Add all messages from the updated history
+                chatHistory.forEach(msg => {
+                    addMessageToUI(msg.sender, msg.message, false);
+                });
+                
+                scrollToBottom();
+            }
+            
+            function addMessageToUI(sender, message, scroll = true) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = message;
+                
+                messageDiv.appendChild(messageContent);
+                chatContainer.appendChild(messageDiv);
+                
+                if (scroll) {
+                    scrollToBottom();
+                }
+            }
+            
+            function showTypingIndicator() {
+                typingIndicator.style.display = 'block';
+                scrollToBottom();
+            }
+            
+            function hideTypingIndicator() {
+                typingIndicator.style.display = 'none';
+            }
+            
+            function scrollToBottom() {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
