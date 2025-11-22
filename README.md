@@ -1,6 +1,13 @@
 
 # LIMMA Applications — Low Code, Low Cost AI Integration Platform
 
+####  `pip install pyvoicekit` [![PyPI Downloads](https://static.pepy.tech/personalized-badge/pyvoicekit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/pyvoicekit)
+
+#### `pip install plugllm` [![PyPI Downloads](https://static.pepy.tech/personalized-badge/plugllm?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/plugllm)
+
+#### `pip install limma` [![PyPI Downloads](https://static.pepy.tech/personalized-badge/limma?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/limma)
+
+
 > **LIMMA (Language Interface Model for Machine Automation)** is an open framework to build **AI-integrated, automation-ready** applications with minimal code and infrastructure.  
 >  
 > This repository — **limma-applications** — showcases real-world templates and example projects that demonstrate how LIMMA can be used to create **innovative**, **scalable**, and **cost-efficient** solutions across multiple domains.
@@ -15,6 +22,13 @@ Each application in this repo (like `HomeGPT`, `RoboticsCar`, `AutoHub`, etc.) d
 - How to connect LIMMA to real-world actions (IoT, devices, chat, or APIs)
 - How to design modular low-code systems
 - How to integrate AI reasoning and automation logic for intelligent control
+
+### 🎥 Video Demonstration
+
+<iframe width="560" height="315" 
+src="https://youtu.be/2XtwzxRjgUI?si=-STIf3TckVR1Ra3_" 
+frameborder="0" allowfullscreen></iframe>
+
 
 ---
 
