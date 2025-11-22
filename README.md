@@ -39,7 +39,7 @@ Each **application** acts as the **“body”** — executing those actions in a
 
 **Architecture:**
 
-<img src="https://raw.githubusercontent.com/firoziya/limma-applications/refs/heads/main/docs/diagram.png" alt="LIMMA Architecture Diagram" width="600"/>
+[Watch on YouTube](https://youtu.be/2XtwzxRjgUI?si=q-OYqXj5ymUmxZUt)
 
 ```
 [User Interface] ⇄ [LIMMA AI Engine / Model] ⇄ [Application Logic] ⇄ [Device / API / Database]
