@@ -25,10 +25,7 @@ Each application in this repo (like `HomeGPT`, `RoboticsCar`, `AutoHub`, etc.) d
 
 ### 🎥 Video Demonstration
 
-<iframe width="560" height="315" 
-src="https://youtu.be/2XtwzxRjgUI?si=-STIf3TckVR1Ra3_" 
-frameborder="0" allowfullscreen></iframe>
-
+[Watch on YouTube](https://youtu.be/2XtwzxRjgUI?si=q-OYqXj5ymUmxZUt)
 
 ---
 
@@ -39,7 +36,7 @@ Each **application** acts as the **“body”** — executing those actions in a
 
 **Architecture:**
 
-[Watch on YouTube](https://youtu.be/2XtwzxRjgUI?si=q-OYqXj5ymUmxZUt)
+<img src="https://raw.githubusercontent.com/firoziya/limma-applications/refs/heads/main/docs/diagram.png" alt="LIMMA Architecture Diagram" width="600"/>
 
 ```
 [User Interface] ⇄ [LIMMA AI Engine / Model] ⇄ [Application Logic] ⇄ [Device / API / Database]
@@ -303,6 +300,5 @@ For more information or partnership inquiries, visit [https://limma.live](https:
 
 
 ---
-
 
 
