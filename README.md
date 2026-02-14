@@ -279,7 +279,7 @@ If you have built an app using LIMMA, please:
 
 ## 🛡️ License
 
-MIT License — open for learning, research, and innovation.
+Apache License 2.0 — open for learning, research, and innovation.
 For commercial use, please check [limma.live](https://limma.live).
 
 ---
